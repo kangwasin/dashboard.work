@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Work Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f5f9;--surface:#fff;--ink:#1b2333;--muted:#657089;--line:#e3e7ef;
+  --side:#18233f;--side-ink:#c5cce0;--accent:#2f5bea;--accent-soft:#e8eefd;
+  --ok:#14966b;--warn:#d98a0b;--bad:#d6453d;--bar:#c9d3ee;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161f;--surface:#1b212e;--ink:#e8ecf5;--muted:#939db6;--line:#2a3243;
+  --side:#0e1424;--accent:#6f8cff;--accent-soft:#232d4d;--bar:#34426b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12161f;--surface:#1b212e;--ink:#e8ecf5;--muted:#939db6;--line:#2a3243;--side:#0e1424;--accent:#6f8cff;--accent-soft:#232d4d;--bar:#34426b;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.55 "IBM Plex Sans Thai",system-ui,"Segoe UI",sans-serif}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:var(--side);color:var(--side-ink);padding:20px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:600;font-size:16px;padding:4px 10px 20px}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center;font-size:14px;color:#fff}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:inherit;text-decoration:none;margin-bottom:2px;cursor:pointer}
+nav a:hover{background:rgba(255,255,255,.07)}
+nav a.on{background:rgba(255,255,255,.13);color:#fff;font-weight:500}
+nav .grp{font-size:12px;color:#7f8aa8;margin:18px 12px 6px}
+.main{min-width:0}
+header{display:flex;align-items:center;gap:14px;padding:14px 28px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header h1{font-size:18px;font-weight:600;margin:0;flex:1}
+.search{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 12px;width:220px;font:inherit}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--muted);padding:6px 12px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{padding:24px 28px;max-width:1440px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.card h2{font-size:14px;font-weight:600;margin:0 0 2px}
+.sub{color:var(--muted);font-size:12.5px;margin:0 0 14px}
+.kpi{grid-column:span 3}
+.kpi .v{font-size:26px;font-weight:600;margin:6px 0 2px}
+.kpi .l{color:var(--muted);font-size:13px}
+.d{font-size:12.5px;font-weight:500}.up{color:var(--ok)}.down{color:var(--bad)}
+.c-chart{grid-column:span 8}.c-status{grid-column:span 4}
+.c-table{grid-column:span 8}.c-act{grid-column:span 4}
+svg text{fill:var(--muted);font:11px "IBM Plex Sans Thai",sans-serif}
+.legend{display:flex;gap:16px;color:var(--muted);font-size:12.5px;margin-bottom:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.stat{margin-bottom:14px}
+.stat .row{display:flex;justify-content:space-between;margin-bottom:5px}
+.track{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.track b{display:block;height:100%;border-radius:4px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:12.5px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+.pill{padding:2px 10px;border-radius:99px;font-size:12px;font-weight:500}
+.p-ok{background:rgba(20,150,107,.14);color:var(--ok)}
+.p-warn{background:rgba(217,138,11,.16);color:var(--warn)}
+.p-bad{background:rgba(214,69,61,.14);color:var(--bad)}
+.mini{width:90px;height:6px;background:var(--bg);border-radius:3px;display:inline-block;vertical-align:middle;margin-right:8px;overflow:hidden}
+.mini b{display:block;height:100%;background:var(--accent)}
+.act{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.act:last-child{border-bottom:0}
+.act .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:7px;flex:none}
+.act small{color:var(--muted);display:block}
+@media (max-width:1100px){.kpi{grid-column:span 6}.c-chart,.c-status,.c-table,.c-act{grid-column:span 12}}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;display:flex;overflow-x:auto;padding:10px;gap:4px}
+  aside .brand,aside .grp{display:none}
+  nav{display:flex;gap:4px}nav a{white-space:nowrap}
+  header{padding:12px 16px;flex-wrap:wrap}.search{display:none}
+  .wrap{padding:16px}.kpi{grid-column:span 12}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><div class="logo">W</div>Workspace</div>
+  <nav>
+    <a class="on">ภาพรวม</a><a>โปรเจกต์</a><a>งานของฉัน</a><a>ทีม</a>
+    <div class="grp">การเงินและรายงาน</div>
+    <a>รายได้</a><a>รายงาน</a>
+    <div class="grp">ระบบ</div>
+    <a>ตั้งค่า</a>
+  </nav>
+</aside>
+<div class="main">
+<header>
+  <h1>ภาพรวมการทำงาน</h1>
+  <input class="search" placeholder="ค้นหาโปรเจกต์ งาน หรือคน" aria-label="ค้นหา">
+  <div class="seg" id="seg">
+    <button data-p="w">7 วัน</button><button data-p="m" class="on">30 วัน</button><button data-p="q">90 วัน</button>
+  </div>
+  <div class="avatar" title="กั้ง">ก</div>
+</header>
+<div class="wrap">
+  <div class="grid">
+    <div class="card kpi"><div class="l">รายได้รวม</div><div class="v" id="k1">฿2.84M</div><div class="d up" id="d1">+8.2% จากช่วงก่อน</div></div>
+    <div class="card kpi"><div class="l">โปรเจกต์ที่กำลังทำ</div><div class="v" id="k2">24</div><div class="d up" id="d2">+3 โปรเจกต์ใหม่</div></div>
+    <div class="card kpi"><div class="l">งานที่เสร็จตามกำหนด</div><div class="v" id="k3">92%</div><div class="d down" id="d3">-1.4% จากช่วงก่อน</div></div>
+    <div class="card kpi"><div class="l">งานค้างเกินกำหนด</div><div class="v" id="k4">7</div><div class="d up" id="d4">ลดลง 2 งาน</div></div>
+
+    <div class="card c-chart">
+      <h2>รายได้เทียบเป้าหมาย</h2><p class="sub">หน่วย: ล้านบาท</p>
+      <div class="legend"><span><i style="background:var(--accent)"></i>รายได้จริง</span><span><i style="background:var(--bar)"></i>เป้าหมาย</span></div>
+      <svg id="chart" viewBox="0 0 700 250" width="100%" role="img" aria-label="กราฟรายได้เทียบเป้าหมาย"></svg>
+    </div>
+
+    <div class="card c-status">
+      <h2>สถานะงานทั้งหมด</h2><p class="sub">168 งานใน 24 โปรเจกต์</p>
+      <div class="stat"><div class="row"><span>เสร็จแล้ว</span><span>96</span></div><div class="track"><b style="width:57%;background:var(--ok)"></b></div></div>
+      <div class="stat"><div class="row"><span>กำลังทำ</span><span>41</span></div><div class="track"><b style="width:24%;background:var(--accent)"></b></div></div>
+      <div class="stat"><div class="row"><span>รอตรวจ</span><span>24</span></div><div class="track"><b style="width:14%;background:var(--warn)"></b></div></div>
+      <div class="stat"><div class="row"><span>เกินกำหนด</span><span>7</span></div><div class="track"><b style="width:4%;background:var(--bad)"></b></div></div>
+    </div>
+
+    <div class="card c-table">
+      <h2>โปรเจกต์ที่ต้องติดตาม</h2><p class="sub">เรียงตามกำหนดส่งใกล้สุด</p>
+      <div class="tw"><table>
+        <thead><tr><th>โปรเจกต์</th><th>ผู้รับผิดชอบ</th><th>ความคืบหน้า</th><th>กำหนดส่ง</th><th>สถานะ</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+    </div>
+
+    <div class="card c-act">
+      <h2>ความเคลื่อนไหวล่าสุด</h2><p class="sub">จากทั้งทีม</p>
+      <div class="act"><span class="dot"></span><div>นิดา ส่งมอบ Landing Page รอบสุดท้าย<small>10 นาทีที่แล้ว</small></div></div>
+      <div class="act"><span class="dot"></span><div>ธีระ ย้ายงาน API Gateway ไปรอตรวจ<small>1 ชั่วโมงที่แล้ว</small></div></div>
+      <div class="act"><span class="dot"></span><div>ระบบ แจ้งเตือนงานเกินกำหนด 2 งาน<small>3 ชั่วโมงที่แล้ว</small></div></div>
+      <div class="act"><span class="dot"></span><div>มานี เพิ่มโปรเจกต์ Data Pipeline<small>เมื่อวาน</small></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+const data={
+ w:{lab:["จ.","อ.","พ.","พฤ.","ศ.","ส.","อา."],a:[.31,.42,.38,.5,.47,.22,.18],t:[.4,.4,.4,.45,.45,.2,.2],k:["฿0.64M","+4.1% จากช่วงก่อน","22","+1 โปรเจกต์ใหม่","94%","+0.8% จากช่วงก่อน","5","ลดลง 1 งาน"]},
+ m:{lab:["สัปดาห์ 1","สัปดาห์ 2","สัปดาห์ 3","สัปดาห์ 4"],a:[.62,.71,.78,.73],t:[.7,.7,.72,.72],k:["฿2.84M","+8.2% จากช่วงก่อน","24","+3 โปรเจกต์ใหม่","92%","-1.4% จากช่วงก่อน","7","ลดลง 2 งาน"]},
+ q:{lab:["ก.ย.","ต.ค.","พ.ย."],a:[2.4,2.7,2.84],t:[2.5,2.6,2.8],k:["฿7.94M","+11.6% จากช่วงก่อน","27","+6 โปรเจกต์ใหม่","90%","-2.1% จากช่วงก่อน","9","เพิ่มขึ้น 1 งาน"]}
+};
+const projects=[
+ ["ระบบ CRM ใหม่","นิดา",78,"30 พ.ย.","ok","ตามแผน"],
+ ["Data Pipeline","มานี",52,"3 ธ.ค.","warn","เสี่ยงล่าช้า"],
+ ["API Gateway","ธีระ",90,"5 ธ.ค.","ok","ตามแผน"],
+ ["แอปมือถือ v2","สมชาย",34,"12 ธ.ค.","bad","ล่าช้า"],
+ ["รายงานประจำไตรมาส","ปรีชา",66,"15 ธ.ค.","ok","ตามแผน"]
+];
+document.getElementById("rows").innerHTML=projects.map(p=>
+ `<tr><td><b style="font-weight:500">${p[0]}</b></td><td>${p[1]}</td><td><span class="mini"><b style="width:${p[2]}%"></b></span>${p[2]}%</td><td>${p[3]}</td><td><span class="pill p-${p[4]}">${p[5]}</span></td></tr>`).join("");
+
+function draw(key){
+ const d=data[key],svg=document.getElementById("chart"),W=700,H=250,L=36,B=28,T=10;
+ const max=Math.max(...d.a,...d.t)*1.15,n=d.a.length,gw=(W-L)/n,bw=Math.min(34,gw*.28);
+ let s="";
+ for(let i=0;i<=4;i++){const y=T+(H-T-B)*(1-i/4);s+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L-6}" y="${y+4}" text-anchor="end">${(max*i/4).toFixed(1)}</text>`}
+ d.a.forEach((v,i)=>{
+  const cx=L+gw*i+gw/2,h1=(H-T-B)*v/max,h2=(H-T-B)*d.t[i]/max;
+  s+=`<rect x="${cx-bw-2}" y="${H-B-h2}" width="${bw}" height="${h2}" rx="3" fill="var(--bar)"/>`;
+  s+=`<rect x="${cx+2}" y="${H-B-h1}" width="${bw}" height="${h1}" rx="3" fill="var(--accent)"/>`;
+  s+=`<text x="${cx}" y="${H-8}" text-anchor="middle">${d.lab[i]}</text>`;
+ });
+ svg.innerHTML=s;
+ ["k1","d1","k2","d2","k3","d3","k4","d4"].forEach((id,i)=>document.getElementById(id).textContent=d.k[i]);
+}
+document.getElementById("seg").addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on",x===b));
+ draw(b.dataset.p);
+});
+draw("m");
+</script>
+</body>
+</html>
